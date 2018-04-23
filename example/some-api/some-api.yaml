@@ -7,6 +7,17 @@ data:
   cert.pem: {{ passLookup "my/secret/certificate" | b64enc }}
 ---
 apiVersion: extensions/v1beta1
+kind: ConfigMap
+metadata:
+  name: some-config
+data:
+  # The content of the example configuration file is templated in here
+  # by the 'insertFile' function and indented for YAML-compatibility
+  # with the 'indent' function:
+  some.cfg: |
+{{ insertFile "some.cfg" | indent 4 }}
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: some-api

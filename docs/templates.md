@@ -74,9 +74,11 @@ Some template functions come from Go's standard library and are listed in the
 [Go documentation][]. In addition the functions declared by [sprig][] are
 available in kontemplate, as well as three custom functions:
 
-`json`: Encodes any supplied data structure as JSON.
-`passLookup`: Looks up the supplied key in [pass][]
-`fromFile`: Pastes the content of the given files name.
+* `json`: Encodes any supplied data structure as JSON.
+* `gitHEAD`: Retrieves the commit hash at Git `HEAD`.
+* `passLookup`: Looks up the supplied key in [pass][].
+* `insertFile`: Insert the contents of the given file in the resource
+  set folder as a string.
 
 ## Examples:
 
@@ -95,6 +97,9 @@ certKeyPath: my-website/cert-key
 
 {{ .certKeyPath | passLookup }}
 -> Returns content of 'my-website/cert-key' from pass
+
+{{ gitHEAD }}
+-> Returns the Git commit hash at HEAD.
 ```
 
 ## Conditionals & ranges
