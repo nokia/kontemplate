@@ -23,7 +23,7 @@ import (
 	"github.com/polydawn/meep"
 	"github.com/tazjin/kontemplate/context"
 	"github.com/tazjin/kontemplate/templater"
-	"gopkg.in/alecthomas/kingpin.v2"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
 const version string = "1.3.0"
@@ -43,8 +43,9 @@ var (
 	excludes = app.Flag("exclude", "Resource sets to exclude explicitly").Short('e').Strings()
 
 	// Commands
-	template     = app.Command("template", "Template resource sets and print them")
-	templateFile = template.Arg("file", "Cluster configuration file to use").Required().String()
+	template          = app.Command("template", "Template resource sets and print them")
+	templateFile      = template.Arg("file", "Cluster configuration file to use").Required().String()
+	templateOutputDir = template.Flag("output-dir", "Output directory where to place templated files").Short('o').String()
 
 	apply       = app.Command("apply", "Template resources and pass to 'kubectl apply'")
 	applyFile   = apply.Arg("file", "Cluster configuration file to use").Required().String()
@@ -105,6 +106,11 @@ func templateCommand() {
 
 		for _, r := range rs.Resources {
 			fmt.Fprintf(os.Stderr, "Rendered file %s/%s:\n", rs.Name, r.Filename)
+			if *templateOutputDir != "" {
+				os.MkdirAll(*templateOutputDir, 0777)
+				f, _ := os.Create(*templateOutputDir + "/" + r.Filename)
+				fmt.Fprintf(f, r.Rendered)
+			}
 			fmt.Println(r.Rendered)
 		}
 	}
